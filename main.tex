@@ -1,0 +1,314 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ADASS Poster -- self-contained beamerposter layout
+% Adapted from the MUW Poster template (CC BY-NC-SA 3.0)
+%
+% Compile with: pdflatex adass_poster.tex   (run twice)
+%
+% Optional files (placeholders are drawn automatically if missing):
+%   logo_left.png   logo_right.png   logo_extra.png
+%   skyimage.jpg    (all-sky photo, device photo, ...)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[final]{beamer}
+\usepackage[size=a0,orientation=portrait,scale=1.25]{beamerposter}
+
+\usepackage[T1]{fontenc}
+\usepackage[scaled=0.92]{helvet}   % scalable sans (any size)
+\usepackage{courier}             % scalable monospace
+\renewcommand{\familydefault}{\sfdefault}
+\usefonttheme{professionalfonts}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{qrcode}
+\usepackage{hyperref}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,calc,fit,backgrounds}
+
+%-----------------------------------------------
+% COLOURS  (edit these to re-theme everything)
+%-----------------------------------------------
+\definecolor{night}{RGB}{11,18,48}       % header / dark areas
+\definecolor{accent}{RGB}{255,176,46}    % amber highlight (sky glow)
+\definecolor{skyblue}{RGB}{66,135,245}
+\definecolor{paper}{RGB}{247,248,252}
+\definecolor{ink}{RGB}{30,34,50}
+\definecolor{softgrey}{RGB}{226,230,240}
+
+\hypersetup{colorlinks=true,urlcolor=skyblue,linkcolor=skyblue}
+
+%-----------------------------------------------
+% BEAMER STYLING
+%-----------------------------------------------
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{background canvas}{bg=paper}
+\setbeamercolor{normal text}{fg=ink}
+\setbeamerfont{normal text}{size=\fontsize{40}{54}\selectfont}
+\setbeamerfont{block title}{size=\fontsize{56}{64}\selectfont,series=\bfseries}
+\setbeamercolor{block title}{fg=white,bg=night}
+\setbeamercolor{block body}{fg=ink,bg=white}
+
+% Rounded blocks with an amber rule under the title
+\setbeamertemplate{block begin}{
+  \vskip.75ex
+  \begin{beamercolorbox}[rounded=false,wd=\textwidth,leftskip=1.2cm,
+    rightskip=1cm,sep=0.9cm]{block title}
+    \usebeamerfont{block title}\insertblocktitle
+  \end{beamercolorbox}
+  {\color{accent}\hrule height 5pt}
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\textwidth,sep=1.1cm,
+    leftskip=0.6cm,rightskip=0.6cm]{block body}
+  \fontsize{40}{54}\selectfont
+}
+\setbeamertemplate{block end}{
+  \end{beamercolorbox}
+  \vskip1.5ex
+}
+
+\setbeamertemplate{itemize item}{\color{accent}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{skyblue}$\blacktriangleright$}
+
+%-----------------------------------------------
+% HELPERS: placeholders if files are missing
+%-----------------------------------------------
+\newcommand{\logoslot}[3]{% file, height, label
+  \IfFileExists{#1}{\includegraphics[height=#2]{#1}}{%
+    \tikz\node[draw=white,dashed,line width=2pt,text=white,
+      minimum height=#2,minimum width=1.6*#2,font=\large]{#3};}}
+
+\newlength{\slotw}
+\newlength{\sloth}
+\newcommand{\imageslot}[3]{% file, width, label
+  \setlength{\slotw}{#2}\setlength{\sloth}{0.62\slotw}%
+  \IfFileExists{#1}{\includegraphics[width=\slotw]{#1}}{%
+    \begin{tikzpicture}\node[fill=softgrey,draw=night!40,dashed,line width=2pt,
+      minimum width=\slotw,minimum height=\sloth,text width=\dimexpr\slotw-2cm\relax,
+      text=night!70,font=\Large,align=center]{#3};\end{tikzpicture}}}
+
+% Layout lengths (A0 portrait: 841 x 1189 mm)
+\newlength{\colw}
+\setlength{\colw}{0.435\paperwidth}
+\newlength{\gutter}
+\setlength{\gutter}{0.03\paperwidth}
+
+\begin{document}
+\begin{frame}[t]
+
+%--------------------------------------------------------------------------------------
+% HEADER BAND WITH LOGOS
+%--------------------------------------------------------------------------------------
+\begin{tikzpicture}[remember picture,overlay]
+  % dark band
+  \fill[night] (current page.north west) rectangle
+       ([yshift=-17cm]current page.north east);
+  \fill[accent] ([yshift=-17cm]current page.north west) rectangle
+       ([yshift=-17.8cm]current page.north east);
+
+  % decorative "stars"
+  \begin{scope}
+    \foreach \x/\y/\s in {12/-2/2pt,25/-9/3pt,31/-3/1.5pt,45/-11/2pt,
+      58/-4/3pt,63/-12/1.5pt,72/-2.5/2pt,80/-8/3pt,96/-3.5/2pt,
+      104/-10/1.5pt,118/-5/3pt,126/-12/2pt,138/-2/1.5pt,150/-9/2pt,
+      160/-4/3pt,168/-11/1.5pt,176/-3/2pt}
+      \fill[white,opacity=.7] ([xshift=\x cm,yshift=\y cm]current page.north west) circle (\s);
+  \end{scope}
+
+  % logos
+  \node[anchor=west] at ([xshift=1cm,yshift=-8.8cm]current page.north west)
+    {\logoslot{img/logo001.png}{8cm}{\Huge LOGO 1}};
+  \node[anchor=east] at ([xshift=-3cm,yshift=-8.8cm]current page.north east)
+    {\logoslot{img/logoDSP_light.png}{10cm}{\Huge LOGO 2}};
+\end{tikzpicture}
+
+\vspace*{0.5cm}
+\begin{center}
+  \begin{minipage}{0.56\paperwidth}
+    \centering
+    {\color{white}\fontsize{88}{98}\selectfont\bfseries
+      A distributed system for collecting sky brightness data\par}
+    \vspace{1.1cm}
+    {\color{accent}\fontsize{52}{60}\selectfont
+      Sim\'on Torres$^{1}$, Guillermo Damke$^{1}$, Third Author$^{1}$\par}
+    \vspace{0.5cm}
+    {\color{white!85!night}\fontsize{38}{46}\selectfont
+      $^{1}$NOIRLab \quad $^{2}$Institution Two \quad
+      \texttt{\color{accent}simon.torres@noirlab.edu}\par}
+  \end{minipage}
+\end{center}
+
+\vspace{5.5cm}
+
+%--------------------------------------------------------------------------------------
+% BODY: TWO COLUMNS
+%--------------------------------------------------------------------------------------
+\begin{columns}[t]
+\begin{column}{0.03\paperwidth}\end{column}
+
+%================ LEFT COLUMN ================
+\begin{column}{\colw}
+
+\begin{block}{Abstract}
+  The Dark Sky Protection Program aims to establish long-term monitoring of sky brightness at several sites of interest to NOIRLab.
+  We present an open-source Python package for acquiring and managing data from SQM-LE and TESS-W4C devices, 
+  together with supporting components, yet to be released, that enable their autonomous operation at geographically distributed locations. 
+  The system is designed for robust, unattended operation, with resilience to communication, hardware, and software failures. 
+  These capabilities provide a scalable infrastructure for long-term characterization of sky brightness and its evolution at astronomical sites.
+\end{block}
+
+\begin{block}{The Hardware}
+  \begin{center}
+    \imageslot{img/photometers.png}{0.92\linewidth}{Image placeholder\\
+      (\texttt{skyimage.jpg}: photo of the device / all-sky image)}
+    \vspace{0.4cm}
+
+    {\itshape Figure 1. Arrangement of pairs of SQM-LE and TESS-W4C photometers aimed at several key locations. This particular setup is located at Cerro Pach\'on, Chile.}
+  \end{center}
+  Replace this with a description of the hardware.
+\end{block}
+
+% \begin{block}{Results}
+%   Replace with your results.
+
+%   \begin{center}
+%   \begin{tabular}{lccc}
+%     \toprule
+%     \textbf{Station} & \textbf{Samples} & \textbf{Mean (mag/arcsec$^2$)} & \textbf{Uptime (\%)}\\
+%     \midrule
+%     Site A & 10\,000 & 21.4 & 98\\
+%     Site B & 8\,500  & 20.9 & 95\\
+%     Site C & 12\,300 & 21.8 & 99\\
+%     \bottomrule
+%   \end{tabular}
+%   \end{center}
+% \end{block}
+
+\end{column}
+
+\begin{column}{\gutter}\end{column}
+
+%================ RIGHT COLUMN ================
+\begin{column}{\colw}
+
+\begin{block}{Architecture}
+  \begin{center}
+  % ---------- DIAGRAM ----------
+  \resizebox{0.97\linewidth}{!}{%
+  \begin{tikzpicture}[
+      font=\sffamily\Large,
+      node distance=4cm and 6cm,
+      box/.style={rectangle,rounded corners=10pt,draw=night,line width=2pt,
+        fill=white,minimum width=9cm,minimum height=4cm,align=center,
+        text width=8.2cm},
+      hw/.style={box,fill=skyblue!15},
+      sw/.style={box,fill=accent!25},
+      outb/.style={box,fill=night,text=white,draw=night},
+      arr/.style={-{Stealth[length=5mm,width=4mm]},line width=2.5pt,color=night},
+      lbl/.style={font=\sffamily\large\itshape,text=night!80,align=center}
+    ]
+    % hardware row
+    \node[hw] (sensor) {\textbf{Sensor}\\[2pt]\large photometer / SQM};
+    \node[hw,right=of sensor] (logger) {\textbf{Data logger}\\[2pt]\large Raspberry Pi / microcontroller};
+    % software row
+    \node[sw,below=4.2cm of sensor] (pkg) {\textbf{Python package}\\[2pt]\large acquisition \& calibration};
+    \node[sw,right=of pkg] (store) {\textbf{Storage}\\[2pt]\large files / database};
+    % outputs row
+    \node[outb,below=4.2cm of pkg] (tools) {\textbf{Tools}\\[2pt]\large \textcolor{accent}{CLI} \& plotting};
+    \node[outb,right=of tools] (arch) {\textbf{Archive / Web}\\[2pt]\large \textcolor{accent}{shared dataset}};
+
+    \draw[arr] (sensor) -- node[above,lbl]{serial / TCP} (logger);
+    \draw[arr] (logger.south) -- ++(0,-1.3) -| node[pos=.25,above,lbl]{raw readings} (pkg.north);
+    \draw[arr] (pkg) -- node[above,lbl]{records} (store);
+    \draw[arr] (pkg) -- (tools);
+    \draw[arr] (store) -- (arch);
+
+    % group backgrounds
+    \begin{scope}[on background layer]
+      \node[fit=(sensor)(logger),fill=skyblue!8,draw=skyblue,dashed,
+        line width=2pt,rounded corners=14pt,inner sep=.9cm,
+        label={[font=\sffamily\large\bfseries,text=skyblue]above:Hardware}] {};
+      \node[fit=(pkg)(store),fill=accent!8,draw=accent!80!black,dashed,
+        line width=2pt,rounded corners=14pt,inner sep=.9cm,
+        label={[font=\sffamily\large\bfseries,text=accent!60!black]above:Software}] {};
+      \node[fit=(tools)(arch),fill=night!6,draw=night,dashed,
+        line width=2pt,rounded corners=14pt,inner sep=.9cm,
+        label={[font=\sffamily\large\bfseries,text=night]above:Products}] {};
+    \end{scope}
+  \end{tikzpicture}}
+
+  \vspace{0.4cm}
+  {\itshape Figure 2. Data flow from the sensor to the archive.}
+  \end{center}
+\end{block}
+
+\begin{block}{Usage}
+  Replace this with a short description and a code snippet:
+  \begin{center}
+  \begin{minipage}{0.92\linewidth}
+  \begin{tikzpicture}
+    \node[fill=night,text=white,rounded corners=8pt,inner sep=0.7cm,
+      text width=0.9\linewidth,font=\ttfamily\fontsize{34}{44}\selectfont]{%
+      \textcolor{accent}{\$} pip install yourpackage\\
+      \textcolor{accent}{\$} yourpackage collect --device /dev/ttyUSB0\\
+      \textcolor{accent}{\$} yourpackage plot --night 2026-10-01};
+  \end{tikzpicture}
+  \end{minipage}
+  \end{center}
+\end{block}
+
+\begin{block}{Conclusions \& Future Work}
+  \begin{itemize}
+    \item First conclusion
+    \item Second conclusion
+    \item Planned work
+  \end{itemize}
+\end{block}
+
+\end{column}
+
+\begin{column}{0.03\paperwidth}\end{column}
+\end{columns}
+
+\vfill
+
+%--------------------------------------------------------------------------------------
+% FOOTER: LINKS + QR CODES + EXTRA LOGO
+%--------------------------------------------------------------------------------------
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[night] ([yshift=14cm]current page.south west) rectangle (current page.south east);
+  \fill[accent] ([yshift=14cm]current page.south west) rectangle
+       ([yshift=14.7cm]current page.south east);
+
+  % GitHub
+  \node[anchor=west,text=white,font=\sffamily\fontsize{42}{52}\selectfont,align=left]
+    at ([xshift=4cm,yshift=10.5cm]current page.south west)
+    {\textbf{\color{accent}Source code}\\[4pt]
+     \href{https://github.com/dark-sky-protection/dspp_reader}{\color{white}github.com/dark-sky-protection/dspp\_reader}};
+  \node[anchor=west,inner sep=0] at ([xshift=4cm,yshift=3.5cm]current page.south west) {};
+
+  % Read the Docs
+  \node[anchor=west,text=white,font=\sffamily\fontsize{42}{52}\selectfont,align=left]
+    at ([xshift=4cm,yshift=6cm]current page.south west)
+    {\textbf{\color{accent}Documentation}\\[4pt]
+     \href{https://dspp-reader.readthedocs.io}{\color{white}dspp-reader.readthedocs.io}};
+
+  % QR codes (white tiles)
+  \node[fill=white,rounded corners=6pt,inner sep=4pt,anchor=east]
+    at ([xshift=-0.38\paperwidth,yshift=7.8cm]current page.south east)
+    {\qrcode[height=8cm]{https://github.com/dark-sky-protection/dspp_reader}};
+  \node[fill=white,rounded corners=6pt,inner sep=4pt,anchor=east]
+    at ([xshift=-0.26\paperwidth,yshift=7.8cm]current page.south east)
+    {\qrcode[height=8cm]{https://dspp-reader.readthedocs.io}};
+
+  % extra logo / conference
+  \node[anchor=east] at ([xshift=-3cm,yshift=7.8cm]current page.south east)
+    {\logoslot{img/logo003.png}{6cm}{\huge ADASS}};
+
+  \node[text=white!70,font=\sffamily\fontsize{32}{38}\selectfont,anchor=south]
+    at ([yshift=1cm]current page.south) {ADASS XXXVI \quad|\quad Acknowledgements: Dark Sky Protection Program, NOIRLab, NSF.};
+\end{tikzpicture}
+
+\end{frame}
+\end{document}
