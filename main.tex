@@ -167,7 +167,8 @@
 
     {\itshape Figure 1. Arrangement of pairs of SQM-LE and TESS-W4C photometers aimed at several key locations. This particular setup is located at Cerro Pach\'on, Chile.}
   \end{center}
-  The photometers provide network interfaces over Ethernet (SQM-LE) and Wi-Fi (TESS-W4C), respectively, using TCP/IP for network communication. This allows us to setup nodes and then safely send the data to a datacenter.
+  The photometers provide network interfaces over Ethernet (SQM-LE) and Wi-Fi (TESS-W4C), respectively, using TCP/IP for network communication. 
+  This allows us to setup nodes that request a reading from the photometers and then safely send the data to a datacenter.
 \end{block}
 
 % \begin{block}{Results}
@@ -192,6 +193,25 @@
 
 %================ RIGHT COLUMN ================
 \begin{column}{\colw}
+
+  \begin{block}{The \texttt{dspp-reader} Python Package}
+    Released as open-source software under the BSD 3-Clause License, the \texttt{dspp-reader} package provides terminal scripts for the supported photometers. 
+    To adjust the behavior of the scripts, a configuration file is used to set parameters such as the photometer's IP address, 
+    the data collection interval, and the output directory for storing the collected data. 
+    It is possible to override the configuration file parameters by passing command-line arguments to the scripts.
+  % Replace this with a short description and a code snippet:
+  % \begin{center}
+  % \begin{minipage}{0.92\linewidth}
+  % \begin{tikzpicture}
+  %   \node[fill=night,text=white,rounded corners=8pt,inner sep=0.7cm,
+  %     text width=0.9\linewidth,font=\ttfamily\fontsize{34}{44}\selectfont]{%
+  %     \textcolor{accent}{\$} pip install yourpackage\\
+  %     \textcolor{accent}{\$} yourpackage collect --device /dev/ttyUSB0\\
+  %     \textcolor{accent}{\$} yourpackage plot --night 2026-10-01};
+  % \end{tikzpicture}
+  % \end{minipage}
+  % \end{center}
+\end{block}
 
 \begin{block}{Architecture}
   \begin{center}
@@ -280,22 +300,10 @@
   \vspace{0.4cm}
   {\itshape Figure 2. Arrows direction represent the request's direction.}
   \end{center}
+  Using Docker containers, the system can be deployed on any machine with minimal setup. It allows for easy scaling and management of multiple photometers, as each photometer can be assigned its own containerized instance of the \texttt{dspp-reader} application.
 \end{block}
 
-\begin{block}{Usage}
-  Replace this with a short description and a code snippet:
-  \begin{center}
-  \begin{minipage}{0.92\linewidth}
-  \begin{tikzpicture}
-    \node[fill=night,text=white,rounded corners=8pt,inner sep=0.7cm,
-      text width=0.9\linewidth,font=\ttfamily\fontsize{34}{44}\selectfont]{%
-      \textcolor{accent}{\$} pip install yourpackage\\
-      \textcolor{accent}{\$} yourpackage collect --device /dev/ttyUSB0\\
-      \textcolor{accent}{\$} yourpackage plot --night 2026-10-01};
-  \end{tikzpicture}
-  \end{minipage}
-  \end{center}
-\end{block}
+
 
 \begin{block}{Conclusions \& Future Work}
   \begin{itemize}
