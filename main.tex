@@ -196,8 +196,9 @@
 \begin{column}{\colw}
 
   \begin{block}{The \texttt{dspp-reader} Python Package}
-    Released as open-source software under the BSD 3-Clause License, the \texttt{dspp-reader} package provides terminal scripts for the supported photometers. 
-    To adjust the behavior of the scripts, a configuration file is used to set parameters such as the photometer's IP address, 
+    Released as open-source software under the BSD 3-Clause License, the \texttt{dspp-reader} 
+    package provides command-line scripts for the supported photometers. 
+    Script behavior is set through a configuration file, used to set parameters such as the photometer's IP address, 
     the data collection interval, and the output directory for storing the collected data. 
     It is possible to override the configuration file parameters by passing command-line arguments to the scripts.
     The same functionality is also available through a Python API, allowing for more advanced usage and integration with other software.
@@ -290,16 +291,17 @@
     \draw[arrd] (7.6,-7.1) -- (10.2,-7.1);
   \end{tikzpicture}}
   \vspace{0.4cm}
-  {\itshape Figure 2. Arrows represent the request's direction.}
+  {\itshape Figure 2. Arrows represent the direction of each request.}
   \end{center}
-  Using Docker containers, the system can be deployed on any machine with minimal setup. It allows for easy scaling and management of multiple photometers. This setup also allows for robust failure resistance and recovery.
+  Using Docker containers, the system can be deployed on any machine with minimal setup. 
+  It allows for easy scaling, robust fault tolerance and recovery, and management of multiple photometers.
 \end{block}
 
 
-
-\begin{block}{Future Work}
-  One of the key aspects that need reviewing is the output file format and its 
-  compliance with a standard aproved by the community. For instance (Kyba, C.C.M., Lolkema, D.E, 2012.)
+\begin{block}{Conclusions \& Future Work}
+  We have successfully deployed an autonomous and failure-resistant system. 
+  The Python package \texttt{dspp-reader} has been released and we expect to release other components next year.
+  Further improvements include making sure that the file formats implemented are compliant with community standards, such as Kyba \& Lolkema (2012)
 \end{block}
 
 \end{column}
