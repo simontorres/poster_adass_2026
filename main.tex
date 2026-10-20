@@ -131,10 +131,10 @@
       A distributed system for collecting sky brightness data\par}
     \vspace{1.1cm}
     {\color{accent}\fontsize{52}{60}\selectfont
-      Sim\'on Torres$^{1}$, Guillermo Damke$^{1}$, Benjamin Urbina$^{1}$\par}
+      Sim\'on Torres, Guillermo Damke,\\ Benjamin Urbina, Constance E. Walker\par}
     \vspace{0.5cm}
     {\color{white!85!night}\fontsize{38}{46}\selectfont
-      $^{1}$NOIRLab \quad
+      NOIRLab \quad
       \texttt{\color{accent}simon.torres@noirlab.edu}\par}
   \end{minipage}
 \end{center}
@@ -152,24 +152,27 @@
 
 \begin{block}{Abstract}
   The Dark Sky Protection Program (DSPP) aims to establish long-term monitoring of sky brightness at several sites of interest to NOIRLab.
-  We present an open-source Python package for acquiring and managing data from SQM-LE and TESS-W4C devices, 
-  together with supporting components, yet to be released, that enable their autonomous operation at geographically distributed locations. 
-  The system is designed for robust, unattended operation, with resilience to communication, hardware, and software failures. 
-  These capabilities provide a scalable infrastructure for long-term characterization of sky brightness and its evolution at astronomical sites. 
-  % In this poster we focus on the \verb=dspp-reader= Python package, which provides a unified interface for data acquisition, calibration, and storage.
+  \begin{itemize}
+    \item We present an open-source Python package for acquiring and managing data from SQM-LE and TESS-W4C devices. 
+    \item The system is designed for robust, unattended operation, with resilience to communication, hardware, and other causes of interruption. 
+    \item These capabilities provide a scalable infrastructure for long-term characterization of sky brightness. 
+  \end{itemize}
 \end{block}
 
 \begin{block}{Hardware}
   \begin{center}
-    \imageslot{img/photometers.png}{0.92\linewidth}{Image placeholder\\
+    \imageslot{img/photometers.jpg}{0.92\linewidth}{Image placeholder\\
       (\texttt{skyimage.jpg}: photo of the device / all-sky image)}
     \vspace{0.4cm}
 
-    {\itshape Figure 1. Arrangement of pairs of SQM-LE and TESS-W4C photometers aimed at several key locations.  This particular setup is located at Cerro Pach\'on, Chile.}
+    {\itshape Figure 1. Arrangement of pairs of SQM-LE and TESS-W4C photometers aimed at several key locations.}
   \end{center}
-  The photometers provide network interfaces over Ethernet (SQM-LE) and Wi-Fi (TESS-W4C), 
-  respectively, using TCP/IP for network communication. 
-  This allows us to set up nodes that request a reading from the photometers and then reliably send the data to a data center.
+  \begin{itemize}
+    \item The photometers provide network interfaces over Ethernet (SQM-LE) and Wi-Fi (TESS-W4C), 
+  respectively, using TCP/IP. 
+    \item This allows us to set up nodes that request a reading from the photometers and then reliably send the data to a data center.
+    \item Data is also saved to plain text files for redundancy.
+  \end{itemize}
 \end{block}
 
 % \begin{block}{Results}
@@ -198,8 +201,8 @@
   \begin{block}{The \texttt{dspp-reader} Python Package}
     Released as open-source software under the BSD 3-Clause License, the \texttt{dspp-reader} 
     package provides command-line scripts for the supported photometers. 
-    Script behavior is set through a configuration file, used to set parameters such as the photometer's IP address, 
-    the data collection interval, and the output directory for storing the collected data. 
+    Script behavior is set through a configuration file, used to set parameters such as the photometer's IP address or
+    the data collection interval. 
     It is possible to override the configuration file parameters by passing command-line arguments to the scripts.
     The same functionality is also available through a Python API, allowing for more advanced usage and integration with other software.
 
@@ -300,8 +303,13 @@
 
 \begin{block}{Conclusions \& Future Work}
   We have successfully deployed an autonomous and failure-resistant system. 
-  The Python package \texttt{dspp-reader} has been released and we expect to release other components next year.
-  Further improvements include making sure that the file formats implemented are compliant with community standards, such as Kyba \& Lolkema (2012)
+  \begin{itemize}
+    \item The Python package \texttt{dspp-reader} has been released and we expect to release other components during 2027.
+    \item We will review that the plain text file formats implemented are compliant with community standards, such as Kyba \& Lolkema (2012)
+    \item We plan to study if the photometers' calibration drifts after long-term operation.
+  \end{itemize}
+  
+  
 \end{block}
 
 \end{column}
