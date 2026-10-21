@@ -131,10 +131,10 @@
       A distributed system for collecting sky brightness data\par}
     \vspace{1.1cm}
     {\color{accent}\fontsize{52}{60}\selectfont
-      Sim\'on Torres$^{1}$, Guillermo Damke$^{1}$, Third Author$^{1}$\par}
+      Sim\'on Torres, Guillermo Damke,\\ Benjamin Urbina, Constance E. Walker\par}
     \vspace{0.5cm}
     {\color{white!85!night}\fontsize{38}{46}\selectfont
-      $^{1}$NOIRLab \quad $^{2}$Institution Two \quad
+      NOIRLab \quad
       \texttt{\color{accent}simon.torres@noirlab.edu}\par}
   \end{minipage}
 \end{center}
@@ -151,22 +151,28 @@
 \begin{column}{\colw}
 
 \begin{block}{Abstract}
-  The Dark Sky Protection Program aims to establish long-term monitoring of sky brightness at several sites of interest to NOIRLab.
-  We present an open-source Python package for acquiring and managing data from SQM-LE and TESS-W4C devices, 
-  together with supporting components, yet to be released, that enable their autonomous operation at geographically distributed locations. 
-  The system is designed for robust, unattended operation, with resilience to communication, hardware, and software failures. 
-  These capabilities provide a scalable infrastructure for long-term characterization of sky brightness and its evolution at astronomical sites.
+  The Dark Sky Protection Program (DSPP) aims to establish long-term monitoring of sky brightness at several sites of interest to NOIRLab.
+  \begin{itemize}
+    \item We present an open-source Python package for acquiring and managing data from SQM-LE and TESS-W4C devices. 
+    \item The system is designed for robust, unattended operation, with resilience to communication, hardware, and other causes of interruption. 
+    \item These capabilities provide a scalable infrastructure for long-term characterization of sky brightness. 
+  \end{itemize}
 \end{block}
 
-\begin{block}{The Hardware}
+\begin{block}{Hardware}
   \begin{center}
-    \imageslot{img/photometers.png}{0.92\linewidth}{Image placeholder\\
+    \imageslot{img/photometers.jpg}{0.92\linewidth}{Image placeholder\\
       (\texttt{skyimage.jpg}: photo of the device / all-sky image)}
     \vspace{0.4cm}
 
-    {\itshape Figure 1. Arrangement of pairs of SQM-LE and TESS-W4C photometers aimed at several key locations. This particular setup is located at Cerro Pach\'on, Chile.}
+    {\itshape Figure 1. Arrangement of pairs of SQM-LE and TESS-W4C photometers aimed at several key locations.}
   \end{center}
-  Replace this with a description of the hardware.
+  \begin{itemize}
+    \item The photometers provide network interfaces over Ethernet (SQM-LE) and Wi-Fi (TESS-W4C), 
+  respectively, using TCP/IP. 
+    \item This allows us to set up nodes that request a reading from the photometers and then reliably send the data to a data center.
+    \item Data is also saved to plain text files for redundancy.
+  \end{itemize}
 \end{block}
 
 % \begin{block}{Results}
@@ -192,78 +198,118 @@
 %================ RIGHT COLUMN ================
 \begin{column}{\colw}
 
-\begin{block}{Architecture}
+  \begin{block}{The \texttt{dspp-reader} Python Package}
+    Released as open-source software under the BSD 3-Clause License, the \texttt{dspp-reader} 
+    package provides command-line scripts for the supported photometers. 
+    Script behavior is set through a configuration file, used to set parameters such as the photometer's IP address or
+    the data collection interval. 
+    It is possible to override the configuration file parameters by passing command-line arguments to the scripts.
+    The same functionality is also available through a Python API, allowing for more advanced usage and integration with other software.
+
+\end{block}
+
+\begin{block}{Deployment}
   \begin{center}
   % ---------- DIAGRAM ----------
   \resizebox{0.97\linewidth}{!}{%
   \begin{tikzpicture}[
-      font=\sffamily\Large,
-      node distance=4cm and 6cm,
-      box/.style={rectangle,rounded corners=10pt,draw=night,line width=2pt,
-        fill=white,minimum width=9cm,minimum height=4cm,align=center,
-        text width=8.2cm},
-      hw/.style={box,fill=skyblue!15},
-      sw/.style={box,fill=accent!25},
-      outb/.style={box,fill=night,text=white,draw=night},
-      arr/.style={-{Stealth[length=5mm,width=4mm]},line width=2.5pt,color=night},
-      lbl/.style={font=\sffamily\large\itshape,text=night!80,align=center}
+      scale=1.4,font=\sffamily\normalsize,
+      arr/.style={-{Stealth[length=5mm,width=4mm]},line width=2.5pt,color=night,
+        rounded corners=6pt},
+      arrd/.style={arr,dash pattern=on 10pt off 7pt},
+      frm/.style={line width=2pt,rounded corners=18pt},
+      tag/.style={font=\sffamily\large\bfseries,anchor=north west}
     ]
-    % hardware row
-    \node[hw] (sensor) {\textbf{Sensor}\\[2pt]\large photometer / SQM};
-    \node[hw,right=of sensor] (logger) {\textbf{Data logger}\\[2pt]\large Raspberry Pi / microcontroller};
-    % software row
-    \node[sw,below=4.2cm of sensor] (pkg) {\textbf{Python package}\\[2pt]\large acquisition \& calibration};
-    \node[sw,right=of pkg] (store) {\textbf{Storage}\\[2pt]\large files / database};
-    % outputs row
-    \node[outb,below=4.2cm of pkg] (tools) {\textbf{Tools}\\[2pt]\large \textcolor{accent}{CLI} \& plotting};
-    \node[outb,right=of tools] (arch) {\textbf{Archive / Web}\\[2pt]\large \textcolor{accent}{shared dataset}};
+    %%%%%%%%%%%%%%%%%%%% FRAMES (drawn first, behind everything) %%%%%%%%%%%%%%%%%%%%
+    % photometers (hardware)
+    \draw[frm,draw=skyblue!80!night,fill=skyblue!7] (0.2,-2.4) rectangle (8.2,3.9);
+    \node[font=\sffamily\large\bfseries,text=skyblue!70!night] at (4.2,3.2) {Photometers};
+    % docker space: readers
+    \draw[frm,draw=accent!70!black,fill=accent!8,dash pattern=on 14pt off 5pt on 3pt off 5pt]
+      (9.5,-2.4) rectangle (27.2,3.9);
+    \node[tag,text=accent!50!black] at (9.9,3.75) {Docker Space};
+    % docker space: API + database
+    % docker space: API + database (separate space, different color)
+    \draw[frm,draw=orange!80!black,fill=orange!8,dash pattern=on 14pt off 5pt on 3pt off 5pt](9.5,-9.0) rectangle (27.2,-4.4);
+    \node[tag,text=orange!50!black] at (9.9,-4.6) {Docker Space};
 
-    \draw[arr] (sensor) -- node[above,lbl]{serial / TCP} (logger);
-    \draw[arr] (logger.south) -- ++(0,-1.3) -| node[pos=.25,above,lbl]{raw readings} (pkg.north);
-    \draw[arr] (pkg) -- node[above,lbl]{records} (store);
-    \draw[arr] (pkg) -- (tools);
-    \draw[arr] (store) -- (arch);
+    %%%%%%%%%%%%%%%%%%%% PHOTOMETERS (cylinders) %%%%%%%%%%%%%%%%%%%%
+    \foreach \cx/\clab in {1.7/{$\cdots$}, 4.3/7826, 6.9/7827}{
+      \filldraw[fill=skyblue!25,draw=night,line width=2pt]
+        ({\cx-1},-0.95) -- ({\cx-1},1.35) arc (180:0:1 and 0.32)
+        -- ({\cx+1},-0.95) arc (0:-180:1 and 0.32) -- cycle;
+      \filldraw[fill=skyblue!8,draw=night,line width=2pt] (\cx,1.35) ellipse (1 and 0.32);
+      \node[font=\sffamily\normalsize\bfseries] at (\cx,0.1) {\clab};
+    }
 
-    % group backgrounds
-    \begin{scope}[on background layer]
-      \node[fit=(sensor)(logger),fill=skyblue!8,draw=skyblue,dashed,
-        line width=2pt,rounded corners=14pt,inner sep=.9cm,
-        label={[font=\sffamily\large\bfseries,text=skyblue]above:Hardware}] {};
-      \node[fit=(pkg)(store),fill=accent!8,draw=accent!80!black,dashed,
-        line width=2pt,rounded corners=14pt,inner sep=.9cm,
-        label={[font=\sffamily\large\bfseries,text=accent!60!black]above:Software}] {};
-      \node[fit=(tools)(arch),fill=night!6,draw=night,dashed,
-        line width=2pt,rounded corners=14pt,inner sep=.9cm,
-        label={[font=\sffamily\large\bfseries,text=night]above:Products}] {};
-    \end{scope}
+    %%%%%%%%%%%%%%%%%%%% DSPP_READER (3D nodes) %%%%%%%%%%%%%%%%%%%%
+    \foreach \pid/\xc in {7827/13.9, 7826/22.7}{
+      % top and left faces
+      \filldraw[fill=accent!40,draw=night,line width=2pt]
+        ({\xc-3.3},1.8) -- ({\xc-4.1},2.6) -- ({\xc+2.5},2.6) -- ({\xc+3.3},1.8) -- cycle;
+      \filldraw[fill=accent!40,draw=night,line width=2pt]
+        ({\xc-3.3},1.8) -- ({\xc-4.1},2.6) -- ({\xc-4.1},-1.0) -- ({\xc-3.3},-1.8) -- cycle;
+      % front face
+      \filldraw[fill=accent!14,draw=night,line width=2pt] ({\xc-3.3},-1.8) rectangle ({\xc+3.3},1.8);
+      % component box with header
+      \filldraw[fill=white,draw=night,line width=2pt] ({\xc-2.85},-1.4) rectangle ({\xc+2.85},1.4);
+      \filldraw[fill=night,draw=night,line width=2pt] ({\xc-2.85},0.4) rectangle ({\xc+2.85},1.4);
+      \node[text=white,font=\sffamily\normalsize\bfseries] at (\xc,0.9) {DSPP\_READER};
+      \node[align=center,text width=6.4cm,font=\sffamily\normalsize] at (\xc,-0.5)
+        {Containerized\\app for \textbf{\pid}};
+    }
+
+    %%%%%%%%%%%%%%%%%%%% DSPP API %%%%%%%%%%%%%%%%%%%%
+    
+    \filldraw[fill=white,draw=night,line width=2pt] (16.5,-8.3) rectangle (24.2,-5.3);
+    \filldraw[fill=night,draw=night,line width=2pt] (16.5,-6.3) rectangle (24.2,-5.3);
+    \node[text=white,font=\sffamily\normalsize\bfseries] at (20.35,-5.8) {DSPP API};
+    \node[align=center,text width=10.2cm,font=\sffamily\normalsize] at (20.35,-7.3)
+      {RESTful API};
+
+    %%%%%%%%%%%%%%%%%%%% POSTGRESQL %%%%%%%%%%%%%%%%%%%%
+    \filldraw[fill=skyblue!25,draw=night,line width=2pt]
+      (10.2,-8.0) -- (10.2,-6.2) arc (180:0:2.2 and 0.38)
+      -- (14.6,-8.0) arc (0:-180:2.2 and 0.38) -- cycle;
+    \filldraw[fill=skyblue!8,draw=night,line width=2pt] (12.4,-6.2) ellipse (2.2 and 0.38);
+    \node[font=\sffamily\normalsize\bfseries] at (12.4,-7.2) {PostgreSQL};
+
+    %%%%%%%%%%%%%%%%%%%% GRAFANA (planned) %%%%%%%%%%%%%%%%%%%%
+    \filldraw[fill=night!4,draw=night!70,dash pattern=on 10pt off 7pt,line width=2pt]
+      (0.2,-8.3) rectangle (7.6,-5.3);
+    \draw[draw=night!70,dash pattern=on 10pt off 7pt,line width=2pt] (0.2,-6.3) -- (7.6,-6.3);
+    \node[font=\sffamily\normalsize\bfseries,text=night!80] at (3.9,-5.8) {Grafana Dashboard};
+    \node[font=\sffamily\normalsize\itshape,text=night!70,align=center] at (3.9,-7.3) {Under Development};
+
+    %%%%%%%%%%%%%%%%%%%% ARROWS (request direction) %%%%%%%%%%%%%%%%%%%%
+    % reader -> photometer
+    \draw[arr] (11.5,-1.8) -- (11.5,-3.1)  -- (6.9,-3.1)  -- (6.9,-1.3);
+    \draw[arr] (20.3,-1.8) -- (20.3,-3.75) -- (4.3,-3.75) -- (4.3,-1.3);
+    % reader -> API
+    \draw[arr] (16.9,-1.8) -- (16.9,-5.3);
+    \draw[arr] (25.1,-1.8) -- (25.1,-7.1) -- (24.2,-7.1);
+    % API -> database
+    \draw[arr] (16.5,-7.1) -- (14.6,-7.1);
+    % Grafana -> database (planned)
+    \draw[arrd] (7.6,-7.1) -- (10.2,-7.1);
   \end{tikzpicture}}
-
   \vspace{0.4cm}
-  {\itshape Figure 2. Data flow from the sensor to the archive.}
+  {\itshape Figure 2. Arrows represent the direction of each request.}
   \end{center}
+  Using Docker containers, the system can be deployed on any machine with minimal setup. 
+  It allows for easy scaling, robust fault tolerance and recovery, and management of multiple photometers.
 \end{block}
 
-\begin{block}{Usage}
-  Replace this with a short description and a code snippet:
-  \begin{center}
-  \begin{minipage}{0.92\linewidth}
-  \begin{tikzpicture}
-    \node[fill=night,text=white,rounded corners=8pt,inner sep=0.7cm,
-      text width=0.9\linewidth,font=\ttfamily\fontsize{34}{44}\selectfont]{%
-      \textcolor{accent}{\$} pip install yourpackage\\
-      \textcolor{accent}{\$} yourpackage collect --device /dev/ttyUSB0\\
-      \textcolor{accent}{\$} yourpackage plot --night 2026-10-01};
-  \end{tikzpicture}
-  \end{minipage}
-  \end{center}
-\end{block}
 
 \begin{block}{Conclusions \& Future Work}
+  We have successfully deployed an autonomous and failure-resistant system. 
   \begin{itemize}
-    \item First conclusion
-    \item Second conclusion
-    \item Planned work
+    \item The Python package \texttt{dspp-reader} has been released and we expect to release other components during 2027.
+    \item We will review that the plain text file formats implemented are compliant with community standards, such as Kyba \& Lolkema (2012)
+    \item We plan to study if the photometers' calibration drifts after long-term operation.
   \end{itemize}
+  
+  
 \end{block}
 
 \end{column}
@@ -274,37 +320,35 @@
 \vfill
 
 %--------------------------------------------------------------------------------------
-% FOOTER: LINKS + QR CODES + EXTRA LOGO
+% FOOTER: QR CARDS (code + docs) + EXTRA LOGO
 %--------------------------------------------------------------------------------------
 \begin{tikzpicture}[remember picture,overlay]
   \fill[night] ([yshift=14cm]current page.south west) rectangle (current page.south east);
   \fill[accent] ([yshift=14cm]current page.south west) rectangle
        ([yshift=14.7cm]current page.south east);
 
-  % GitHub
-  \node[anchor=west,text=white,font=\sffamily\fontsize{42}{52}\selectfont,align=left]
-    at ([xshift=4cm,yshift=10.5cm]current page.south west)
-    {\textbf{\color{accent}Source code}\\[4pt]
+  % ---- Source code card: QR + label + URL ----
+  \node[fill=white,rounded corners=6pt,inner sep=5pt,anchor=west]
+    at ([xshift=3cm,yshift=7.8cm]current page.south west) {\qrcode[height=8cm,nolink]{https://github.com/dark-sky-protection/dspp_reader}};
+  \node[anchor=west,text=white,font=\sffamily\fontsize{32}{40}\selectfont,align=left,inner sep=0]
+    at ([xshift=12.6cm,yshift=7.8cm]current page.south west)
+    {{\bfseries\color{accent}\fontsize{42}{50}\selectfont \IfFileExists{img/github.png}{\setlength{\fboxsep}{6pt}\colorbox{white}{\includegraphics[height=1.6cm]{img/github.png}}\hspace{0.6cm}}{}Source code}\\[8pt]
      \href{https://github.com/dark-sky-protection/dspp_reader}{\color{white}github.com/dark-sky-protection/dspp\_reader}};
-  \node[anchor=west,inner sep=0] at ([xshift=4cm,yshift=3.5cm]current page.south west) {};
 
-  % Read the Docs
-  \node[anchor=west,text=white,font=\sffamily\fontsize{42}{52}\selectfont,align=left]
-    at ([xshift=4cm,yshift=6cm]current page.south west)
-    {\textbf{\color{accent}Documentation}\\[4pt]
+  % ---- Documentation card: QR + label + URL ----
+  \node[fill=white,rounded corners=6pt,inner sep=5pt,anchor=west]
+    at ([xshift=36.5cm,yshift=7.8cm]current page.south west) {\qrcode[height=8cm,nolink]{https://dspp-reader.readthedocs.io}};
+  \node[anchor=west,text=white,font=\sffamily\fontsize{32}{40}\selectfont,align=left,inner sep=0]
+    at ([xshift=46.1cm,yshift=7.8cm]current page.south west)
+    {{\bfseries\color{accent}\fontsize{42}{50}\selectfont \IfFileExists{img/readthedocs.png}{\setlength{\fboxsep}{6pt}\colorbox{white}{\includegraphics[height=1.6cm]{img/readthedocs.png}}\hspace{0.6cm}}{}Documentation}\\[8pt]
      \href{https://dspp-reader.readthedocs.io}{\color{white}dspp-reader.readthedocs.io}};
 
-  % QR codes (white tiles)
-  \node[fill=white,rounded corners=6pt,inner sep=4pt,anchor=east]
-    at ([xshift=-0.38\paperwidth,yshift=7.8cm]current page.south east)
-    {\qrcode[height=8cm]{https://github.com/dark-sky-protection/dspp_reader}};
-  \node[fill=white,rounded corners=6pt,inner sep=4pt,anchor=east]
-    at ([xshift=-0.26\paperwidth,yshift=7.8cm]current page.south east)
-    {\qrcode[height=8cm]{https://dspp-reader.readthedocs.io}};
+  % thin divider between the two cards
+  \draw[white!35,line width=2pt] ([xshift=34.5cm,yshift=3.2cm]current page.south west) -- ([xshift=34.5cm,yshift=12.4cm]current page.south west);
 
   % extra logo / conference
   \node[anchor=east] at ([xshift=-3cm,yshift=7.8cm]current page.south east)
-    {\logoslot{img/logo003.png}{6cm}{\huge ADASS}};
+    {\logoslot{img/logo003.png}{6.8cm}{\huge ADASS}};
 
   \node[text=white!70,font=\sffamily\fontsize{32}{38}\selectfont,anchor=south]
     at ([yshift=1cm]current page.south) {ADASS XXXVI \quad|\quad Acknowledgements: Dark Sky Protection Program, NOIRLab, NSF.};
